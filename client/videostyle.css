@@ -1,0 +1,68 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 30px;
+  justify-content: center;
+}
+
+.video-holder{
+  position: relative;
+  padding: 60px;
+}
+
+#video{
+  background-color: black;
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#my-video{
+  background-color: grey;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 300px;
+  border-radius: 999px;
+  object-fit: cover;
+  outline: 2px solid lightgreen;
+}
+
+.chat-holder{
+  background-color: grey;
+  padding: 30px;
+  height: calc(100vh - 60px);
+}
+
+
+@media only screen and (max-width: 1000px) {
+  body {
+    display: flex;
+    gap: 0;
+    flex-direction: column;
+  }
+  .video-holder{
+    height: calc(60vh - 80px);
+    padding: 40px;
+  }
+  .chat-holder{
+    height: calc(40vh - 80px);
+    padding: 40px;
+  }
+  #my-video{
+    background-color: grey;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 150px;
+    height: 150px;
+    border-radius: 999px;
+  }
+}
