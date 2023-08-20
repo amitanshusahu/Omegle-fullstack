@@ -5,12 +5,13 @@ let peer;
 const myVideo = document.getElementById('my-video');
 const strangerVideo = document.getElementById('video');
 const button = document.getElementById('send');
+const online = document.getElementById('online');
 let remoteSocket;
 let type;
 let roomid;
 
 
-// start media capture
+// starts media capture
 function start() {
   navigator.mediaDevices.getUserMedia({ audio: true, video: true })
     .then(stream => {
@@ -30,15 +31,9 @@ function start() {
     });
 }
 
-
-
-
-
 // connect ot server
 const socket = io('http://localhost:8000');
-socket.on('connect', () => {
-  console.log(socket.id);
-})
+
 
 // disconnectin event
 socket.on('disconnected', () => {
@@ -47,20 +42,23 @@ socket.on('disconnected', () => {
 
 
 
+/// --------- Web rtc related ---------
 
-/// ------- Web rtc related -------
-
-// start 
+// Start 
 socket.emit('start', (person) => {
   type = person;
-
 });
 
-// get remote socket
+
+// Get remote socket
+
 socket.on('remote-socket', (id) => {
   remoteSocket = id;
+
+  // hide the spinner
   document.querySelector('.modal').style.display = 'none';
-  console.log("remote socket", remoteSocket);
+
+  // create a peer conncection
   peer = new RTCPeerConnection();
 
   // on negociation needed 
@@ -68,76 +66,90 @@ socket.on('remote-socket', (id) => {
     webrtc();
   }
 
-  // send ice candidates
+  // send ice candidates to remotesocket
   peer.onicecandidate = e => {
-    console.log('ice to', remoteSocket, e.candidate);
     socket.emit('ice:send', { candidate: e.candidate, to: remoteSocket });
   }
 
-  // state cahnge
-  peer.oniceconnectionstatechange = e => {
-    console.log('ice connection state:', e.iceConnectionState);
-  }
-
+  // start media capture
   start();
+
 });
 
-// @desc : creates offer if it's p1
+
+// creates offer if 'type' = p1
 async function webrtc() {
-  console.log(type, type == 'p1', 'offer');
+
   if (type == 'p1') {
     const offer = await peer.createOffer();
     await peer.setLocalDescription(offer);
     socket.emit('sdp:send', { sdp: peer.localDescription });
-    console.log('sdp send p1', peer.localDescription);
   }
 
 }
 
-// recive sdp
+
+// recive sdp sent by remote socket 
 socket.on('sdp:reply', async ({ sdp, from }) => {
-  console.log('recived sdp from', from, sdp);
+
+  // set remote description 
   await peer.setRemoteDescription(new RTCSessionDescription(sdp));
 
-  console.log(type, type == 'p1', 'reply');
-  console.log(type, type == 'p2', 'reply');
+  // if type == p2, create answer
   if (type == 'p2') {
     const ans = await peer.createAnswer();
     await peer.setLocalDescription(ans);
     socket.emit('sdp:send', { sdp: peer.localDescription });
-    console.log('sdp send p2', peer.localDescription);
   }
 });
 
-// recive ice
+
+// recive ice-candidate form remote socket
 socket.on('ice:reply', async ({ candidate, from }) => {
-  console.log('ice from', from, candidate);
   await peer.addIceCandidate(candidate);
 });
 
 
 
-/// ----------- Messages -----------
 
+/// ----------- Handel Messages Logic -----------
+
+
+// get room id
 socket.on('roomid', id => {
   roomid = id;
 })
 
+// handel send button click
 button.onclick = e => {
+
+  // get input and emit
   let input = document.querySelector('input').value;
-  console.log('working', input);
   socket.emit('send-message', input, type, roomid);
 
-  let msghtml = `<div class="msg">
+  // set input in local message box as 'YOU'
+  let msghtml = `
+  <div class="msg">
   <b>You: </b> <span id='msg'>${input}</span>
-  </div>`
-  document.querySelector('.chat-holder .wrapper').innerHTML += msghtml;
+  </div>
+  `
+  document.querySelector('.chat-holder .wrapper')
+  .innerHTML += msghtml;
+
+  // clear input
+  document.querySelector('input').value = '';
 }
 
+// on get message
 socket.on('get-message', (input, type) => {
-  console.log(input, type);
-  let msghtml = `<div class="msg">
+
+  // set recived message from server in chat box
+  let msghtml = `
+  <div class="msg">
   <b>Stranger: </b> <span id='msg'>${input}</span>
-  </div>`
-  document.querySelector('.chat-holder .wrapper').innerHTML += msghtml;
+  </div>
+  `
+  document.querySelector('.chat-holder .wrapper')
+  .innerHTML += msghtml;
+
 })

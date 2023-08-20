@@ -6,14 +6,14 @@ import { Server } from 'socket.io';
 const server = app.listen('8000', () => console.log('Server is up, 8000'));
 const io = new Server(server, { cors: { origin: '*' } });
 import { handelStart, handelDisconnect, getType } from './lib';
+import { GetTypesResult, room } from './types';
 
 let online: number = 0;
-let roomArr: Array<any> = [];
+let roomArr: Array<room> = [];
 
 io.on('connection', (socket) => {
   online++;
   io.emit('online', online);
-  console.log('user connected', socket.id, online);
 
   // on start
   socket.on('start', cb => {
@@ -25,7 +25,6 @@ io.on('connection', (socket) => {
     online--;
     io.emit('online', online);
     handelDisconnect(socket.id, roomArr, io);
-    console.log('user disconnected', socket.id, online);
   });
 
 
@@ -35,39 +34,43 @@ io.on('connection', (socket) => {
 
   // on ice send
   socket.on('ice:send', ({ candidate }) => {
-    let type = getType(socket.id, roomArr);
-    if (type?.type == 'p1') {
-      io.to(type.p2id).emit('ice:reply', { candidate, from: socket.id });
-      console.log(type.type, type.p2id, candidate);
-    }
-    else if (type?.type == 'p2') {
-      io.to(type.p1id).emit('ice:reply', { candidate, from: socket.id });
-      console.log(type.type, type.p1id, candidate);
+    let type: GetTypesResult = getType(socket.id, roomArr);
+    if (type) {
+      if (type?.type == 'p1') {
+        typeof (type?.p2id) == 'string'
+          && io.to(type.p2id).emit('ice:reply', { candidate, from: socket.id });
+      }
+      else if (type?.type == 'p2') {
+        typeof (type?.p1id) == 'string'
+          && io.to(type.p1id).emit('ice:reply', { candidate, from: socket.id });
+      }
     }
   });
 
   // on sdp send
   socket.on('sdp:send', ({ sdp }) => {
     let type = getType(socket.id, roomArr);
-    if (type?.type == 'p1') {
-      console.log(type.type,'sent p2id', type.p2id, sdp);
-      io.to(type.p2id).emit('sdp:reply', { sdp, from: socket.id });
-    }
-    if (type?.type == 'p2') {
-      console.log(type.type,'sent p1id', type.p1id, sdp);
-      io.to(type.p1id).emit('sdp:reply', { sdp, from: socket.id });
+    if (type) {
+      if (type?.type == 'p1') {
+        typeof (type?.p2id) == 'string'
+          && io.to(type.p2id).emit('sdp:reply', { sdp, from: socket.id });
+      }
+      if (type?.type == 'p2') {
+        typeof (type?.p1id) == 'string'
+          && io.to(type.p1id).emit('sdp:reply', { sdp, from: socket.id });
+      }
     }
   })
 
 
 
   /// --------- Messages -----------
+
   // send message
   socket.on("send-message", (input, type, roomid) => {
     if (type == 'p1') type = 'You: ';
     else if (type == 'p2') type = 'Stranger: ';
     socket.to(roomid).emit('get-message', input, type);
-    console.log(input, type, roomid);
   })
 
 });

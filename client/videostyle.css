@@ -8,9 +8,11 @@ body {
   grid-template-columns: 3fr 1fr;
   gap: 30px;
   justify-content: center;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.modal{
+.modal {
   position: absolute;
   background-color: rgba(18, 0, 32, 0.445);
   height: 100vh;
@@ -22,7 +24,7 @@ body {
   flex-direction: column;
 }
 
-.modal #spinner{
+.modal #spinner {
   font-size: 14px;
   color: white;
   font-weight: bold;
@@ -36,10 +38,11 @@ body {
 }
 
 @keyframes fade {
- to{
-  opacity: 0;
- }
-  from{
+  to {
+    opacity: 0;
+  }
+
+  from {
     opacity: 1;
   }
 }
@@ -57,6 +60,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  overflow: hidden;
+  height: calc(100vh - 120px);
 }
 
 #my-video {
@@ -69,6 +74,7 @@ body {
   border-radius: 999px;
   object-fit: cover;
   outline: 2px solid violet;
+  overflow: hidden;
 }
 
 .chat-holder {
@@ -77,6 +83,7 @@ body {
   position: relative;
   overflow: auto;
   scroll-behavior: smooth;
+  border-left: 2px solid lightblue;
 }
 
 .chat-holder .wrapper {
@@ -144,5 +151,8 @@ button {
     width: 150px;
     height: 150px;
     border-radius: 999px;
+  }
+  #video{
+    height: 100%;
   }
 }
