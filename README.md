@@ -9,9 +9,10 @@
 ---
 
 <div align="center">
+  
+![gihub-thumbnail](https://github.com/amitanshusahu/Omegle-fullstack/assets/83657737/7371b48d-da29-4c9b-bbb9-7b6e73207935)
 
-
-[🔴 watch demo on youtube]()
+[🔴 watch demo on youtube](https://youtu.be/GZyKcIvQqi8)
 
 </div>
 
