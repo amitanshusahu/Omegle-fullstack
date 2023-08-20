@@ -10,6 +10,7 @@ export function handelStart(roomArr: Array<any>, socket: any, cb: Function, io: 
     closeRoom(availableroom.roomid);
     io.to(availableroom.room.p1.id).emit('remote-socket', socket.id);
     socket.emit('remote-socket', availableroom.room.p1.id);
+    socket.emit('roomid', availableroom.room.roomid);
   }
   else {
     let roomid = uuidv4();
@@ -25,6 +26,7 @@ export function handelStart(roomArr: Array<any>, socket: any, cb: Function, io: 
       }
     });
     cb('p1');
+    socket.emit('roomid', roomid);
   }
 
 

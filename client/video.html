@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title></title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="videostyle.css" rel="stylesheet">
-  </head>
-  <body>
-      
-    <div class="video-holder">
-      <video autoplay id="my-video"></video>
-      <video autoplay id="video"></video>
-    </div>
-    <div class="chat-holder">
-      chat
-    </div>
 
-  </body>
-  <script src="./index.js" type="module"></script>
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="videostyle.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="modal">
+    <span id="spinner">Waiting For Someone...</span>
+  </div>
+
+  <div class="video-holder">
+    <video autoplay id="my-video"></video>
+    <video autoplay id="video"></video>
+  </div>
+  <div class="chat-holder">
+    <div class="wrapper">
+    </div>
+    <div class="input">
+      <input type="text" placeholder='Type your massage here..'>
+      <button id="send">Send</button>
+    </div>
+  </div>
+
+</body>
+<script src="./index.js" type="module"></script>
+
 </html>

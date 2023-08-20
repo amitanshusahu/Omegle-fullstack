@@ -60,4 +60,14 @@ io.on('connection', (socket) => {
   })
 
 
+
+  /// --------- Messages -----------
+  // send message
+  socket.on("send-message", (input, type, roomid) => {
+    if (type == 'p1') type = 'You: ';
+    else if (type == 'p2') type = 'Stranger: ';
+    socket.to(roomid).emit('get-message', input, type);
+    console.log(input, type, roomid);
+  })
+
 });

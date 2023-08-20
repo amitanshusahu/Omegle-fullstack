@@ -4,21 +4,21 @@ import { io } from 'socket.io-client';
 let peer;
 const myVideo = document.getElementById('my-video');
 const strangerVideo = document.getElementById('video');
+const button = document.getElementById('send');
 let remoteSocket;
 let type;
+let roomid;
 
 
 // start media capture
 function start() {
-  navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+  navigator.mediaDevices.getUserMedia({ audio: true, video: true })
     .then(stream => {
       if (peer) {
         myVideo.srcObject = stream;
         stream.getTracks().forEach(track => peer.addTrack(track, stream));
 
         peer.ontrack = e => {
-          console.log('on track working');
-          console.log('type of on track ', type);
           strangerVideo.srcObject = e.streams[0];
           strangerVideo.play();
         }
@@ -59,6 +59,7 @@ socket.emit('start', (person) => {
 // get remote socket
 socket.on('remote-socket', (id) => {
   remoteSocket = id;
+  document.querySelector('.modal').style.display = 'none';
   console.log("remote socket", remoteSocket);
   peer = new RTCPeerConnection();
 
@@ -81,9 +82,7 @@ socket.on('remote-socket', (id) => {
   start();
 });
 
-
-
-
+// @desc : creates offer if it's p1
 async function webrtc() {
   console.log(type, type == 'p1', 'offer');
   if (type == 'p1') {
@@ -115,3 +114,30 @@ socket.on('ice:reply', async ({ candidate, from }) => {
   console.log('ice from', from, candidate);
   await peer.addIceCandidate(candidate);
 });
+
+
+
+/// ----------- Messages -----------
+
+socket.on('roomid', id => {
+  roomid = id;
+})
+
+button.onclick = e => {
+  let input = document.querySelector('input').value;
+  console.log('working', input);
+  socket.emit('send-message', input, type, roomid);
+
+  let msghtml = `<div class="msg">
+  <b>You: </b> <span id='msg'>${input}</span>
+  </div>`
+  document.querySelector('.chat-holder .wrapper').innerHTML += msghtml;
+}
+
+socket.on('get-message', (input, type) => {
+  console.log(input, type);
+  let msghtml = `<div class="msg">
+  <b>Stranger: </b> <span id='msg'>${input}</span>
+  </div>`
+  document.querySelector('.chat-holder .wrapper').innerHTML += msghtml;
+})

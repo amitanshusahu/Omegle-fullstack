@@ -1,21 +1,57 @@
-*{
+* {
   margin: 0;
   padding: 0;
 }
 
-body{
+body {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 30px;
   justify-content: center;
 }
 
-.video-holder{
+.modal{
+  position: absolute;
+  background-color: rgba(18, 0, 32, 0.445);
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.modal #spinner{
+  font-size: 14px;
+  color: white;
+  font-weight: bold;
+  height: 200px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  animation: fade 1s ease-in alternate-reverse infinite;
+}
+
+@keyframes fade {
+ to{
+  opacity: 0;
+ }
+  from{
+    opacity: 1;
+  }
+}
+
+
+
+.video-holder {
   position: relative;
   padding: 60px;
 }
 
-#video{
+#video {
   background-color: black;
   border-radius: 20px;
   width: 100%;
@@ -23,8 +59,8 @@ body{
   object-fit: cover;
 }
 
-#my-video{
-  background-color: grey;
+#my-video {
+  background-color: rgb(244, 215, 255);
   position: absolute;
   bottom: 20px;
   right: 20px;
@@ -32,13 +68,55 @@ body{
   height: 300px;
   border-radius: 999px;
   object-fit: cover;
-  outline: 2px solid lightgreen;
+  outline: 2px solid violet;
 }
 
-.chat-holder{
-  background-color: grey;
+.chat-holder {
   padding: 30px;
   height: calc(100vh - 60px);
+  position: relative;
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.chat-holder .wrapper {
+  margin-bottom: 35px;
+}
+
+.chat-holder .input {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  gap: 20px;
+  min-width: 400px;
+  background-color: white;
+  padding: 30px 0;
+}
+
+.chat-holder .msg {
+  margin: 0 0 15px 0;
+  color: rgb(70, 70, 70);
+}
+
+input {
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 15px;
+  font-size: 13px;
+  outline: 2px solid violet;
+}
+
+button {
+  font-size: 14px;
+
+  padding: 10px 20px;
+  font-weight: bold;
+  color: white;
+  background-color: blueviolet;
+  border: none;
+  border-radius: 10px;
+  outline: 2px solid violet;
 }
 
 
@@ -48,16 +126,18 @@ body{
     gap: 0;
     flex-direction: column;
   }
-  .video-holder{
+
+  .video-holder {
     height: calc(60vh - 80px);
     padding: 40px;
   }
-  .chat-holder{
+
+  .chat-holder {
     height: calc(40vh - 80px);
     padding: 40px;
   }
-  #my-video{
-    background-color: grey;
+
+  #my-video {
     position: absolute;
     bottom: 10px;
     right: 10px;
