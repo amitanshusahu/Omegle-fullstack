@@ -21,7 +21,8 @@
 ## 📌 Set up project
 - clone the repo and go into it
 ```bash
-git clone https://github.com/amitanshusahu/Omegle-fullstack/ & cd Omegle-fullstack/
+git clone https://github.com/amitanshusahu/O
+safe chat-fullstack/ & cd Omegle-fullstack/
 ```
 - go to the client folder and start dev server
 ```bash
